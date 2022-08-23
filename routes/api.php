@@ -57,5 +57,5 @@ Route::post('tp', [Technician_professionController::class, 'store'])->name('tech
 Route::post('ranking', [RankingController::class,'store'])->name('ranking.store');
 Route::get('ranking/{id}', [RankingController::class,'show'])->name('ranking.show');
 Route::delete('ranking/{id}',[RankingController::class, 'destroy'])->name('ranking.destroy');
-
-Route::get('city', [CityController::class, 'index']);
+//City routes
+Route::get('cities', [CityController::class, 'index'])->name('city.index');

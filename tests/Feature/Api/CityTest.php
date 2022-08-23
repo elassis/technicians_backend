@@ -21,7 +21,7 @@ class CityTest extends TestCase
         //insert data in test DB
         factory(City::class, 1)->create();
         //Hitting api route
-        $response = $this->getJson('/api/city');
+        $response = $this->getJson(route('city.index'));
         //dd($response->json());
         $this->assertEquals(1, count($response->json()));
     }
