@@ -50,7 +50,7 @@ class UserTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->postJson(route('user.store'),[
+        $response = $this->postJson(route('user.store'),[
             'first_name'     => 'enmanuel',
             'last_name'      => 'lassis',
             'identification' => '01800735258',
@@ -59,6 +59,8 @@ class UserTest extends TestCase
             'password'       => 'rosa1007'
         ])->assertCreated();
 
+        $response->assertStatus(201);
+        
         $this->assertDatabaseHas('users', ['last_name' => 'lassis']);
     }
 
