@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\LoginController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,3 +24,5 @@
 // Route::get('login', function () {
 //     return 'Sorry you must be logged... This is the login!';
 // })->name('login');
+
+Route::post('login', [LoginController::class, 'authenticate'])->name('login');

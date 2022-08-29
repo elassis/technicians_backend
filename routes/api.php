@@ -10,6 +10,7 @@ use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\Technician_professionController;
 use App\Http\Controllers\RankingController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,7 +31,7 @@ use App\Http\Controllers\RankingController;
 // });
 
 //Technican routes
-Route::get('index', [TechnicianController::class, 'index']);
+Route::get('index', [TechnicianController::class, 'index'])->middleware('auth:sanctum')->name('index');
 Route::post('technician', [TechnicianController::class, 'store'])->name('technician.store');
 Route::get('technician/{id}', [TechnicianController::class, 'show'])->name('technician.show');
 Route::put('technician/{id}',[TechnicianController::class, 'update'])->name('technician.update');
@@ -59,3 +60,4 @@ Route::get('ranking/{id}', [RankingController::class,'show'])->name('ranking.sho
 Route::delete('ranking/{id}',[RankingController::class, 'destroy'])->name('ranking.destroy');
 //City routes
 Route::get('cities', [CityController::class, 'index'])->name('city.index');
+

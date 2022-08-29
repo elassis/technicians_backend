@@ -37,6 +37,8 @@ class UserTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        //dd($this->user);
+
         $response = $this->getJson(route('user.show',1));
 
         //dd($response->json()['id']);

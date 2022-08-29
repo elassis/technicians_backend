@@ -16,7 +16,7 @@ class TechnicianController extends Controller
     {
         $users = Technician::all()
             ->where('available', 1);
-        return response($users);
+        return $users;
     }
 
     /**

@@ -29,20 +29,19 @@ class TechnicianTest extends TestCase
       
         factory(User::class, 2)->create();
         
-        factory(Address::class, 1)->create();
-       
+        factory(Address::class, 1)->create();       
         
         $this->tech = factory(Technician::class, 1)->create();
     }
     
-    // public function test_index()
-    // {  
-    //     $this->withoutExceptionHandling();
+     public function test_index()
+     {  
+         $this->withoutExceptionHandling();
       
-    //     $response = $this->getJson('api/index');
+         $response = $this->getJson('api/index');
 
-    //     $this->assertEquals(1, count($response->json()));
-    // }
+         $this->assertEquals(1, count($response->json()));
+     }
 
     public function test_show()
     {
