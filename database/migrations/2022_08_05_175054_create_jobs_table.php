@@ -16,6 +16,7 @@ class CreateJobsTable extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('technician_id');
+            $table->unsignedBigInteger('profession_id');
             $table->unsignedBigInteger('user_id');
             $table->string('comments');
             $table->timestamp('begin_date')->nullable();
@@ -25,6 +26,7 @@ class CreateJobsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('technician_id')->references('id')->on('technicians')
             ->onDelete('cascade');
+            $table->foreign('profession_id')->references('id')->on('professions');
         });
     }
 

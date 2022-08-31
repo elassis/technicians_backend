@@ -16,7 +16,7 @@ class TechnicianController extends Controller
     public function index()
     {
       $techs = DB::table('technicians')
-        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.price_hour, technicians.available,AVG(rankings.job_ranking) as ranking'))
+        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.price_hour, technicians.available, AVG(rankings.job_ranking) as ranking'))
         ->join('users', 'technicians.user_id', '=', 'users.id')
         ->leftJoin('rankings','rankings.technician_id','=','technicians.id')
         ->groupBy('id')
@@ -62,7 +62,20 @@ class TechnicianController extends Controller
     {
        //$tech = Technician::find($id);
        //$tech = Technician::findOrFail($id);//send a message 
-        return response($id);//oneline thanks to the route binding
+       $tech = DB::table('technicians')
+                  ->join('users','technicians.user_id','=','users.id')
+                  ->select('technicians.id','users.first_name','users.last_name','technicians.price_hour')
+                  ->where('technicians.id','=', $id->id)
+                  ->get();
+
+        $prof = DB::table('technician_professions')
+                  ->join('professions','technician_professions.profession_id','=','professions.id')
+                  ->select('professions.id','professions.name')
+                  ->where('technician_professions.technician_id','=',$id->id)
+                  ->get();
+
+                  
+        return [$tech, $prof];//oneline thanks to the route binding
     }
 
     /**

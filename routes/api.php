@@ -33,7 +33,7 @@ use App\Http\Controllers\RankingController;
 //Technican routes
 Route::get('index', [TechnicianController::class, 'index'])->middleware('auth:sanctum')->name('index');
 Route::post('technician', [TechnicianController::class, 'store'])->name('technician.store');
-Route::get('technician/{id}', [TechnicianController::class, 'show'])->name('technician.show');
+Route::get('technician/{id}', [TechnicianController::class, 'show'])->middleware('auth:sanctum')->name('technician.show');
 Route::put('technician/{id}',[TechnicianController::class, 'update'])->name('technician.update');
 Route::delete('technician/{id}',[TechnicianController::class, 'destroy'])->name('technician.destroy');
 //User routes

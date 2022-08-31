@@ -16,7 +16,7 @@ class CreateTechnicianProfessionsTable extends Migration
         Schema::create('technician_professions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('technician_id');
-            $table->unsignedBigInteger('profession_id');
+            $table->unsignedBigInteger('profession_id')->unique();
             $table->timestamps();
 
             $table->foreign('technician_id')->references('id')->on('technicians')
