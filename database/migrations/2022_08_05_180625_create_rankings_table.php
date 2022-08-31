@@ -14,15 +14,15 @@ class CreateRankingsTable extends Migration
     public function up()
     {
         Schema::create('rankings', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('technician_id');
-            $table->unsignedBigInteger('job_id');
-            $table->bigInteger('job_ranking');
-            $table->timestamps();
+          $table->bigIncrements('id');
+          $table->unsignedBigInteger('technician_id');
+          $table->unsignedBigInteger('job_id');
+          $table->bigInteger('job_ranking');
+          $table->timestamps();
 
-            $table->foreign('job_id')->references('id')->on('jobs')
-            ->onDelete('cascade');
-            $table->foreign('technician_id')->references('id')->on('technicians');
+          $table->foreign('job_id')->references('id')->on('jobs')
+          ->onDelete('cascade');
+          $table->foreign('technician_id')->references('id')->on('technicians');
         });
     }
 

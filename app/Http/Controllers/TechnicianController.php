@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Technician;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TechnicianController extends Controller
 {
@@ -14,9 +15,14 @@ class TechnicianController extends Controller
      */
     public function index()
     {
-        $users = Technician::all()
-            ->where('available', 1);
-        return $users;
+      $techs = DB::table('technicians')
+        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.price_hour, technicians.available,AVG(rankings.job_ranking) as ranking'))
+        ->join('users', 'technicians.user_id', '=', 'users.id')
+        ->leftJoin('rankings','rankings.technician_id','=','technicians.id')
+        ->groupBy('id')
+        ->having('technicians.available','=', 1)
+        ->get();
+        return $techs;
     }
 
     /**

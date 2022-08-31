@@ -19,16 +19,12 @@ class LoginController extends Controller
     {
 
         if (!Auth::attempt([
-          'email' => $request->email,
+          'email'    => $request->email,
           'password' => $request->password,
         ])) {
           throw ValidationException::withMessages([
-          'email' => [
-             __('auth.failed')
-          ],
-          'password' => [
-            __('auth.failed')
-          ]
+          'email'    => [__('auth.failed')],
+          'password' => [__('auth.failed')]
           ]);
            //return $request->password;
         }
