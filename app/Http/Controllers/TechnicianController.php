@@ -16,7 +16,7 @@ class TechnicianController extends Controller
     public function index()
     {
       $techs = DB::table('technicians')
-        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.price_hour, technicians.available, AVG(rankings.job_ranking) as ranking'))
+        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.available, AVG(rankings.job_ranking) as ranking'))
         ->join('users', 'technicians.user_id', '=', 'users.id')
         ->leftJoin('rankings','rankings.technician_id','=','technicians.id')
         ->groupBy('id')
@@ -46,7 +46,7 @@ class TechnicianController extends Controller
         // $tech = Technician::create([
         //     'user_id'    => $request->user_id,
         //     'available'  => $request->available,
-        //     'price_hour' => $request->price_hour
+        //     
         // ]);
         $tech = Technician::create($request->all());
         return $tech;
@@ -64,7 +64,7 @@ class TechnicianController extends Controller
        //$tech = Technician::findOrFail($id);//send a message 
        $tech = DB::table('technicians')
                   ->join('users','technicians.user_id','=','users.id')
-                  ->select('technicians.id','users.first_name','users.last_name','technicians.price_hour')
+                  ->select('technicians.id','users.first_name','users.last_name')
                   ->where('technicians.id','=', $id->id)
                   ->get();
 
@@ -104,7 +104,7 @@ class TechnicianController extends Controller
      */
     public function update(Request $request, Technician $id)
     {
-        $request->validate(['price_hour' => 'required']);//validation before proceed
+        //$request->validate(['price_hour' => 'required']);//validation before proceed
         $id->update($request->all());
         return response($id);
     }
