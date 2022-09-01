@@ -73,9 +73,15 @@ class TechnicianController extends Controller
                   ->select('professions.id','professions.name')
                   ->where('technician_professions.technician_id','=',$id->id)
                   ->get();
-
+        
+         $jobs = DB::table('jobs')
+                  ->join('professions','jobs.profession_id','=','professions.id')
+                  ->join('rankings','jobs.id','=','rankings.job_id')
+                  ->select('jobs.id','professions.name','rankings.job_ranking',)
+                  ->where('jobs.technician_id','=', $id->id)
+                  ->get();
                   
-        return [$tech, $prof];//oneline thanks to the route binding
+        return [$tech, $prof, $jobs];//oneline thanks to the route binding
     }
 
     /**

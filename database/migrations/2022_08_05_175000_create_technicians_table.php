@@ -17,7 +17,6 @@ class CreateTechniciansTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->unique();
             $table->boolean('available')->default(true);
-            $table->integer('price_hour')->default(0);
             $table->rememberToken();
             $table->timestamps();
 

@@ -17,6 +17,7 @@ class CreateTechnicianProfessionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('technician_id');
             $table->unsignedBigInteger('profession_id')->unique();
+            $table->integer('price_hour')->default(0);
             $table->timestamps();
 
             $table->foreign('technician_id')->references('id')->on('technicians')
