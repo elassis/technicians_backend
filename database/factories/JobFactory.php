@@ -14,6 +14,8 @@ $factory->define(Job::class, function (Faker $faker) {
         'technician_id' => Technician::inRandomOrder()->first()->id,
         'profession_id' => Profession::inRandomOrder()->first()->id,
         'user_id' => User::inRandomOrder()->first()->id,
+        'status' => 'pending',
+        'text' => $faker->text,
         'comments' => $faker->text,
     ];
 });

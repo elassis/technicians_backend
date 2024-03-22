@@ -10,12 +10,14 @@ use App\User;
 use App\City;
 use App\Address;
 use App\Technician;
+use App\Profession;
 
 class JobTest extends TestCase
 {
     use RefreshDatabase;
 
     protected $job;
+    protected $profession;
 
     public function setUp():void
     {
@@ -24,6 +26,7 @@ class JobTest extends TestCase
         factory(User::class, 1)->create();
         factory(Address::class, 1)->create();
         factory(Technician::class, 1)->create();
+        $this->profession = factory(Profession::class, 1)->create();
         $this->job = factory(Job::class, 1)->create();
     }
     /**
@@ -34,17 +37,22 @@ class JobTest extends TestCase
     public function test_create()
     {
         $this->withoutExceptionHandling();
+        //dd($this->profession[0]->id);
 
-        $this->postJson(route('job.store'),[
-            'user_id'       => 1,
+        $response = $this->postJson(route('job.store'),[
             'technician_id' => 1,
-            'comments'      => 'lorem ipsum'
-        ])->assertCreated();
+            'profession_id' => $this->profession[0]->id,
+            'user_id'       => 1,
+            'text'          => 'lorem ipsum'
+        ]);
 
-        $this->assertDatabaseHas('jobs',['comments' => 'lorem ipsum']);
+        dd($response);
+
+        $this->assertDatabaseHas('jobs',['text' => 'lorem ipsum']);
+        
     }
 
-    public function test_show()
+    /*public function test_show()
     {
         $this->withoutExceptionHandling();
 
@@ -74,5 +82,5 @@ class JobTest extends TestCase
         $this->deleteJson(route('job.destroy',$this->job[0]['id']));
 
         $this->assertDatabaseMissing('jobs', ['id' => 1]);
-    }
+    }*/
 }

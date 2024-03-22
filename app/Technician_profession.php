@@ -3,19 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Technician;
+use App\Profession;
 
 class Technician_profession extends Model
 {
 
     protected $fillable = ['technician_id','profession_id', 'price_hour'];
     
-    public function technicians()
+    public function technician()
     {
-        return $this->hasOne(Technician::class, 'id');
+        return $this->belongsTo(Technician::class);
     }
     
-    public function professions()
+    public function profession()
     {
-        return $this->hasOne(Profession::class, 'id');
+        return $this->belongsTo(Profession::class);
     }
 }

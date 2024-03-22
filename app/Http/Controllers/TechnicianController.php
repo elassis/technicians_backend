@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TechnicianJobsResource;
+use App\Http\Resources\TechnicianResourse;
 use App\Technician;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,14 +18,12 @@ class TechnicianController extends Controller
      */
     public function index()
     {
-      $techs = DB::table('technicians')
-        ->select(DB::raw('technicians.id as id, users.first_name, users.last_name, technicians.available, AVG(rankings.job_ranking) as ranking'))
-        ->join('users', 'technicians.user_id', '=', 'users.id')
-        ->leftJoin('rankings','rankings.technician_id','=','technicians.id')
-        ->groupBy('id')
-        ->having('technicians.available','=', 1)
-        ->get();
-        return $techs;
+        $allTecnicians = Technician::all();
+        $tecnicians = TechnicianResourse::collection($allTecnicians);
+        $techniciansCollection = collect($tecnicians);
+        $sorted = $techniciansCollection->sortByDesc('rankingAvg');
+
+        return $sorted->values()->all();
     }
 
     /**
@@ -58,30 +59,14 @@ class TechnicianController extends Controller
      * @param  \App\Technician  $technician
      * @return \Illuminate\Http\Response
      */
-    public function show(Technician $id)
+    public function show($id)
     {
-       //$tech = Technician::find($id);
-       //$tech = Technician::findOrFail($id);//send a message 
-       $tech = DB::table('technicians')
-                  ->join('users','technicians.user_id','=','users.id')
-                  ->select('technicians.id','users.first_name','users.last_name')
-                  ->where('technicians.id','=', $id->id)
-                  ->get();
-
-        $prof = DB::table('technician_professions')
-                  ->join('professions','technician_professions.profession_id','=','professions.id')
-                  ->select('professions.id','professions.name')
-                  ->where('technician_professions.technician_id','=',$id->id)
-                  ->get();
+        $tech = Technician::findOrFail($id);
         
-         $jobs = DB::table('jobs')
-                  ->join('professions','jobs.profession_id','=','professions.id')
-                  ->join('rankings','jobs.id','=','rankings.job_id')
-                  ->select('jobs.id','professions.name','rankings.job_ranking',)
-                  ->where('jobs.technician_id','=', $id->id)
-                  ->get();
-                  
-        return [$tech, $prof, $jobs];//oneline thanks to the route binding
+        return response()->json([
+          'data' => new TechnicianJobsResource($tech),
+          'status' => 200,
+        ]);
     }
 
     /**

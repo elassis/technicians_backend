@@ -18,7 +18,9 @@ class CreateJobsTable extends Migration
             $table->unsignedBigInteger('technician_id');
             $table->unsignedBigInteger('profession_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('comments');
+            $table->string('status')->default('pending');
+            $table->string('text',250);
+            $table->string('comments')->nullable();
             $table->timestamp('begin_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->timestamps();

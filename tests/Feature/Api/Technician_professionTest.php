@@ -59,4 +59,21 @@ class Technician_professionTest extends TestCase
         $this->assertDatabaseHas('technician_professions',
         ['technician_id' => $this->tech[0]['id']]);
     }
+
+    public function test_delete()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->postJson(route('tech_prof.store'),[
+          'technician_id' => $this->tech[0]['id'],
+          'profession_id' => $this->pro[0]['id']
+        ])->assertCreated();
+
+        $this->deleteJson(route('tech_prof.destroy'),[
+            'technician_id' => $this->tech[0]['id'],
+        ])->assertOk();
+
+        $this->assertDatabaseMissing('technician_professions',
+        ['technician_id' => $this->tech[0]['id']]);
+    }
 }

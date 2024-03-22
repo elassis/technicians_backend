@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Technician_profession;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\TechnicianJobsResource;
+use App\Technician;
 
 class Technician_professionController extends Controller
 {
@@ -15,7 +17,7 @@ class Technician_professionController extends Controller
      */
     public function index()
     {
-        //
+        return Technician_profession::all();
     }
 
     /**
@@ -36,8 +38,21 @@ class Technician_professionController extends Controller
      */
     public function store(Request $request)
     {
-        $tech_pro = Technician_profession::create($request->all());
-        return $tech_pro;
+        $allData = $request->all();
+        $techId = $allData[0]['technician_id'];
+        $techEntity = Technician::findOrFail($techId);
+        try {
+          foreach($allData as $technicianData){
+            Technician_profession::create($technicianData);
+          }
+        } catch (\Throwable $th) {
+          return $th;
+        }
+
+        return response()->json([
+            'data'   => new TechnicianJobsResource($techEntity),
+            'status' => 200          
+        ]);  
     }
 
     /**
@@ -46,9 +61,17 @@ class Technician_professionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Technician_profession $id)
+    public function show($id)
     {
-        return response($id);
+
+        //TODO - REFACTOR THIS
+      $profs = DB::table('technician_professions')
+      ->join('professions','technician_professions.profession_id','=','professions.id')
+      ->select('technician_professions.profession_id','technician_professions.technician_id','professions.name', 'technician_professions.price_hour')
+      ->where('technician_professions.technician_id','=', $id)
+      ->get();
+      return $profs;
+        
     }
 
     /**
@@ -82,6 +105,18 @@ class Technician_professionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $entity = Technician_profession::findOrFail($id);
+            $tech = $entity->technician;
+            $entity->delete();
+          } catch (\Throwable $th) {
+            return response('there was an error', 500);
+          }
+
+        return response()->json([
+            'data'   =>  new TechnicianJobsResource($tech),
+            'status' => 204
+            
+        ]);  
     }
 }

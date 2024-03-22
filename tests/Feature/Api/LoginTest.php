@@ -43,7 +43,7 @@ class LoginTest extends TestCase
           'password' => $this->user[0]['password'],
 
         ]));
-        dd($response);
+        
         //$response->assertStatus(200);
 
         //$this->assertEqual($response->json())

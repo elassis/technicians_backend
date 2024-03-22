@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Technician;
 
 class User extends Authenticatable
 {
@@ -34,4 +35,25 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function techinician()
+    {
+        return $this->hasOne(Technician::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function getAddress()
+    {
+      return [
+        "city"   => $this->address->city->name,
+        "street" => $this->address->street,
+        "sector" => $this->address->sector,
+        "number" => $this->address->number,
+      ];
+    }
 }

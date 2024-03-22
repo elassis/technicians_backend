@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TechnicianResourse;
+use App\Http\Resources\UserResource;
 use App\user;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -54,10 +57,14 @@ class UserController extends Controller
      * @param  \App\user  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(user $id)
+    public function show($email)
     {
-        //$user = user::findOrFail($id);
-        return response($id);
+        $user = User::where('email', $email)->first();
+        $data = new UserResource($user);
+        if($data){
+            return $data;
+        }
+        return null;
     }
 
     /**
@@ -80,8 +87,24 @@ class UserController extends Controller
      */
     public function update(Request $request, user $id)
     {
-        $id->update($request->all());
-        return response($id);
+        try {
+            $id->update($request->all());
+            $id->address->update($request->all());
+            
+            if($id->type == 'client'){
+              $user = new UserResource($id);
+            }else{
+              $tech = $id->techinician;
+              $user = ['user_info' => new TechnicianResourse($tech)];
+            }
+        } catch (\Throwable $th) {
+              throw $th;
+        }
+        
+        return response()->json([
+          'data' => $user,
+          'status' => 200,
+        ]);
     }
 
     /**

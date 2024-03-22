@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Ranking;
-use App\Technician;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Profession;
 
-class RankingController extends Controller
+class ProfessionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,11 +14,8 @@ class RankingController extends Controller
      */
     public function index()
     {
-        $rankings = DB::table('rankings')
-        ->select('rankings.job_id')
-        ->get();
-
-        return response($rankings);
+        $profs = Profession::all();
+        return response($profs);
     }
 
     /**
@@ -41,8 +36,7 @@ class RankingController extends Controller
      */
     public function store(Request $request)
     {
-        $ranking = Ranking::create($request->all());
-        return $ranking;
+        //
     }
 
     /**
@@ -53,11 +47,7 @@ class RankingController extends Controller
      */
     public function show($id)
     {
-        $ranking = DB::table('rankings')
-        ->select('rankings.job_ranking')
-        ->where('rankings.job_id','=',$id)
-        ->get();
-        return response($ranking);
+        //
     }
 
     /**
@@ -89,9 +79,8 @@ class RankingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ranking $id)
+    public function destroy($id)
     {
-        $id->delete();
-        return response('',204);
+        //
     }
 }
