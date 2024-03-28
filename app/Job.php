@@ -10,7 +10,7 @@ class Job extends Model
 
     public function technician()
     {
-        return $this->belongsToMany(Technician::class);
+        return $this->belongsTo(Technician::class);
     }
 
     public function profession()

@@ -97,26 +97,36 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Job $id)
+    public function update(Request $request, $id)
     { 
-        //update job
-        $id->update($request->all());
+      //update job
+        try {
+            $job = Job::findOrFail($id);
+            $job->update($request->all());
 
-        //get technician name, customer email, and response
-        $technician_data = Technician::find($id->technician_id)->users;
-        $customer_mail   = User::find($id->user_id)->email;
-        $response        = $request->status;
-        $tech_name       = $technician_data->first_name .' '.$technician_data->last_name;
+            $technician = $job->technician->user;
+            
+            $client = User::findOrFail($job->user_id);
+            $customerMail = $client->email;
+            
+            $response = $request->status;
+    
+            $techInfo = [
+                'name'  => $technician->first_name .' '.$technician->last_name,
+                'phone' => $technician->cellphone,
+                'email' => $technician->email
+            ];
+    
+            event(new JobRequestReponse($techInfo, $customerMail, $response));
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
+      
 
-        $tech_info = [
-          'name'  => $tech_name,
-          'phone' => $technician_data->cellphone,
-          'email' => $technician_data->email
-        ];
-
-        event(new JobRequestReponse($tech_info, $customer_mail, $response));
-
-        return response(200);
+        return response([
+          'data' => 'job successfully updated',
+          'status' => 200
+        ]);
     }
 
     /**
@@ -125,9 +135,13 @@ class JobController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Job $id)
+    public function destroy($id)
     {
-        $id->delete();
+      try {
+        Job::findOrFail($id)->delete();
+      } catch (\Throwable $th) {
+        response('there was an error', 500);
+      }
         return response('',204);
     }
 
