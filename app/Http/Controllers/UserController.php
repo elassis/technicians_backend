@@ -39,16 +39,35 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-       
-        $user = user::create([
-          'first_name'     => $request->first_name,
-          'last_name'      => $request->last_name,
-          'identification' => $request->identification,
-          'cellphone'      => $request->cellphone,
-          'email'          => $request->email,
-          'password'       => Hash::make($request->password),
+        try{
+            $user = User::create([
+                'first_name'     => $request->first_name,
+                'last_name'      => $request->last_name,
+                'identification' => $request->identification,
+                'cellphone'      => $request->cellphone,
+                'email'          => $request->email,
+                'type'           => $request->type,
+                'password'       => Hash::make($request->password),
+            ]);
+            $user->address()->create($request->all());
+
+            if(count($request->professions) > 0){
+                $tech = $user->technician()->create($request->all());
+                foreach($request->professions as $profession){
+                    $tech->technicianProfession()->create($profession);
+                }
+            }
+
+       }catch(\Throwable $th){
+            return $th;
+       }
+
+        return response([
+            'data' => [
+                'user' => new UserResource($user),
+            ],
+            'status' => 200
         ]);
-        return $user;
     }
 
     /**
@@ -59,12 +78,17 @@ class UserController extends Controller
      */
     public function show($email)
     {
-        $user = User::where('email', $email)->first();
-        $data = new UserResource($user);
-        if($data){
-            return $data;
+        try{
+            $user = User::where('email', $email)->first();
+            $userData = new UserResource($user);
+        }catch(\Throwable $th){
+            return $th;
         }
-        return null;
+        
+        return response([
+            'data' => $userData,
+            'status' => 202,
+        ]);
     }
 
     /**
@@ -94,7 +118,7 @@ class UserController extends Controller
             if($id->type == 'client'){
               $user = new UserResource($id);
             }else{
-              $tech = $id->techinician;
+              $tech = $id->technician;
               $user = ['user_info' => new TechnicianResourse($tech)];
             }
         } catch (\Throwable $th) {
@@ -116,6 +140,6 @@ class UserController extends Controller
     public function destroy(user $id)
     {
         $id->delete();
-        return response('',204);
+        return response('', 204);
     }
 }

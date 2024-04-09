@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TechnicianJobsResource;
 use App\Http\Resources\TechnicianResourse;
 use App\Technician;
+use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class TechnicianController extends Controller
         $techniciansCollection = collect($tecnicians);
         $sorted = $techniciansCollection->sortByDesc('rankingAvg');
 
-        return $sorted->values()->all();
+        return response()->json($sorted->values()->all());
     }
 
     /**
@@ -60,9 +61,13 @@ class TechnicianController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        $tech = Technician::findOrFail($id);
-        
+    {   
+        try{
+            $tech = Technician::where('user_id', $id)->first();
+        }catch(\Throwable $th){
+            return $th;
+        }
+
         return response()->json([
           'data' => new TechnicianJobsResource($tech),
           'status' => 200,

@@ -42,11 +42,11 @@ class Technician_professionController extends Controller
         $techId = $allData[0]['technician_id'];
         $techEntity = Technician::findOrFail($techId);
         try {
-          foreach($allData as $technicianData){
-            Technician_profession::create($technicianData);
-          }
+          	foreach($allData as $technicianData){
+            	Technician_profession::create($technicianData);
+          	}
         } catch (\Throwable $th) {
-          return $th;
+          	return $th;
         }
 
         return response()->json([

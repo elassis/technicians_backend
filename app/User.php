@@ -16,7 +16,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'identification', 'address_id', 'cellphone', 'email' , 'password'];
+    protected $fillable = ['first_name', 'last_name', 'identification', 'address_id', 'cellphone', 'email' , 'password', 'type'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,7 +37,7 @@ class User extends Authenticatable
     ];
 
 
-    public function techinician()
+    public function technician()
     {
         return $this->hasOne(Technician::class);
     }
