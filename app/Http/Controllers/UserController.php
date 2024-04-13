@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TechnicianResourse;
 use App\Http\Resources\UserResource;
+use App\Technician;
 use App\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -107,24 +109,26 @@ class UserController extends Controller
      * @param  \App\user  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, user $id)
+    public function update(Request $request, $id)
     {
         try {
-            $id->update($request->all());
-            $id->address->update($request->all());
+            $user = User::findOrFail($id);
+            $user->update($request->all());
+            $user->address->update($request->all());
             
-            if($id->type == 'client'){
-              $user = new UserResource($id);
+            if($user->type == 'client'){
+                $userResponse = new UserResource($user);
             }else{
-              $tech = $id->technician;
-              $user = ['user_info' => new TechnicianResourse($tech)];
+                $tech = $user->technician;
+                $userResponse = ['user_info' => new TechnicianResourse($tech)];
             }
+            
         } catch (\Throwable $th) {
-              throw $th;
+            throw $th;
         }
         
         return response()->json([
-          'data' => $user,
+          'data' => $userResponse,
           'status' => 200,
         ]);
     }
