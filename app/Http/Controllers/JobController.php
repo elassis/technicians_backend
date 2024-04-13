@@ -41,17 +41,25 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        Job::create($request->all());
-  
-        // get technician email, customer name and profession  
-        $user = User::find($request->user_id);
-        $profession = Profession::findOrFail($request->profession_id);
-        $tech_email = Technician::findOrFail($request->technician_id)->user->email;
-        $_user = $user->first_name.' '.$user->last_name;      
+        try {
+            Job::create($request->all());
+      
+            // get technician email, customer name and profession  
+            $user = User::find($request->user_id);
+            $profession = Profession::findOrFail($request->profession_id);
+            $techEmail = Technician::findOrFail($request->technician_id)->user->email;
+            $userFullname = $user->first_name.' '.$user->last_name;      
 
-        event(new JobRequested($_user, $tech_email, $profession->name));
+            event(new JobRequested($userFullname, $techEmail, $profession->name));
+          
+        } catch (\Throwable $th) {
+            return response($th, 500);
+        }
 
-        return response(200);
+        return response([
+            'data'   => 'job successfully created',
+            'status' => 200
+        ]);
     }
 
     /**
