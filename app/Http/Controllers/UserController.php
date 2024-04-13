@@ -63,9 +63,7 @@ class UserController extends Controller
        }
 
         return response([
-            'data' => [
-                'user' => new UserResource($user),
-            ],
+            'data' =>  new UserResource($user),
             'status' => 200
         ]);
     }
