@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\TechnicianResourse;
 use App\Http\Resources\UserResource;
-use App\Technician;
 use App\user;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -41,6 +40,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+      //REFACTOR THIS USING MUTATORS
         try{
             $user = User::create([
                 'first_name'     => $request->first_name,
@@ -60,14 +60,21 @@ class UserController extends Controller
                 }
             }
 
-       }catch(\Throwable $th){
-            return $th;
+            return response([
+                'data' =>  new UserResource($user),
+                'status' => 200
+            ]);
+
+       }catch(QueryException $e){
+        
+            $errorCode = $e->errorInfo[1];
+            
+            if ($errorCode == 1062) { // MySQL error code for duplicate entry violation
+                // Handle the duplicated entry violation
+                return response()->json(['error' => $e->errorInfo], Response::HTTP_BAD_REQUEST);
+            }
        }
 
-        return response([
-            'data' =>  new UserResource($user),
-            'status' => 200
-        ]);
     }
 
     /**

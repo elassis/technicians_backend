@@ -9,6 +9,7 @@ use App\Technician;
 use App\City;
 use App\Address;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 
 class TechnicianTest extends TestCase
@@ -20,54 +21,69 @@ class TechnicianTest extends TestCase
      * @return void
      */
     protected $tech;
+    protected $user;
+    protected $autUser;
 
     //this function initialize all the preparation of the test avoiding the repetition of the code
     public function setUp():void 
     {
-        parent::setUp();
-        factory(City::class, 1)->create();
+
+      parent::setUp();
+      $this->autUser = User::create([
+        'first_name'     => 'enamnuel',
+        'last_name'      => 'lassis',
+        'identification' => '01800735258',
+        'cellphone'      => '8095423454',
+        'email'          => 'testEmail@gmail.com',
+        'type'           => 'client',
+        'password'       => Hash::make('rosa1007'),
+      ]);
+        $city = factory(City::class, 1)->create();
       
-        factory(User::class, 2)->create();
+        $this->user = factory(User::class, 1)->create();
+
+        factory(Address::class, 1)->create([
+          'user_id' => $this->user[0]->id,
+          'city_id' => $city[0]->id, 
+        ]);       
         
-        factory(Address::class, 1)->create();       
-        
-        $this->tech = factory(Technician::class, 1)->create();
+        $this->tech = factory(Technician::class, 1)->create([
+          'user_id' => $this->user[0]->id,
+        ]);
     }
     
      public function test_index()
      {  
-         $this->withoutExceptionHandling();
+         $this->withoutExceptionHandling();        
       
-         $response = $this->getJson('api/index');
+         $response = $this->actingAs($this->autUser)->getJson('api/index');
 
          $this->assertEquals(1, count($response->json()));
      }
 
-    public function test_show()
+     public function test_show()
     {
         $this->withoutExceptionHandling();
     
-        $response = $this->getJson(route('technician.show', 1));
+        $response = $this->actingAs($this->autUser)->getJson(route('technician.show', $this->user[0]->id));
         
         $response->assertOk();
-
-        $this->assertEquals($response->json()['id'], $this->tech[0]['id']);
+      
+        $this->assertEquals($response->json()['data']['user_info']['user_id'], $this->tech[0]->user_id);
     }
 
-    // public function test_store()
-    // {
-    //     $this->withoutExceptionHandling();
+    public function test_store()
+    {
+       $this->withoutExceptionHandling();
 
-    //     $response = $this->postJson(route('technician.store'), [
-    //         'user_id'    => 2,
-    //         'available'  => true,
-    //         'price_hour' => 350
-    //     ])->assertCreated();
+       $this->postJson(route('technician.store',[
+           'user_id'    => $this->autUser->id,
+           'available'  => true,
+           'price_hour' => 350
+       ]))->assertCreated();
 
-    //     //dd($response->json()['price_hour']);
-
-    //     $this->assertDatabaseHas('technicians', ['price_hour' => 350]);
-    // }
+         $this->assertDatabaseHas('technicians', ['id' => $this->autUser->id]);
+     }
 
     public function test_delete()
     {
@@ -75,17 +91,16 @@ class TechnicianTest extends TestCase
         ->assertNoContent();
 
         $this->assertDatabaseMissing('technicians',[
-            'price_hour' => $this->tech[0]['price_hour']
+            'price_hour' => $this->tech[0]->id
         ]);
     }
-
+ 
     public function test_update()
     {
         $this->putJson(route('technician.update',$this->tech[0]['id']),[
-            'price_hour' => 200
-        ]);
+            'available' => 0 ]);
 
-        $this->assertDatabaseHas('technicians',['price_hour' => 200]);
+        $this->assertDatabaseHas('technicians',['available' =>  0]);
     }
 }
 

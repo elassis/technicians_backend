@@ -10,6 +10,8 @@ use App\Profession;
 use App\Technician;
 use App\Events\JobRequested;
 use App\Events\JobRequestReponse;
+use App\Http\Requests\RankCommentJobRequest;
+use App\Services\JobService;
 
 class JobController extends Controller
 {
@@ -70,32 +72,8 @@ class JobController extends Controller
      */
     public function show($id)
     {
-      $received = DB::table('jobs')
-       ->select('jobs.id','jobs.status','jobs.text','jobs.begin_date','jobs.end_date','users.first_name','users.last_name')
-       ->join('users','jobs.user_id','=','users.id')
-       ->where('jobs.technician_id','=', $id)
-       ->get();
-       $sent = DB::table('jobs')
-       ->select('jobs.id','jobs.status','jobs.text','jobs.begin_date','jobs.technician_id','jobs.end_date','users.first_name','users.last_name')
-       ->join('technicians','jobs.technician_id', '=', 'technicians.id')
-       ->join('users','technicians.user_id','=','users.id')
-       ->where('jobs.user_id','=', $id)
-       ->get();
-        return response([
-          'received' => $received,
-          'sent'     => $sent
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $service = new JobService();
+        return $service->show($id);
     }
 
     /**
@@ -151,6 +129,29 @@ class JobController extends Controller
         response('there was an error', 500);
       }
         return response('',204);
+    }
+
+    /**
+     * Add the Ranking and comment to the source.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function rankCommentJob(RankCommentJobRequest $request)
+    {
+        try{
+            $jobService = new JobService();
+		    $validatedData = $request->validated();
+            $jobId = $validatedData['id'];
+		    $jobService->storeCommentAndRanking($jobId, $validatedData);
+        }catch(\Throwable $th){
+          return response($th, 500);
+        }
+
+        return response([
+          'message' => 'job ranked successfully',
+          'status' => 200,
+        ]);
     }
 
     

@@ -56,6 +56,7 @@ class TechnicianController extends Controller
 
     /**
      * Display the specified resource.
+     * it receives user_id
      *
      * @param  \App\Technician  $technician
      * @return \Illuminate\Http\Response

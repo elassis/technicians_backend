@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 use App\User;
@@ -22,7 +23,7 @@ class LoginTest extends TestCase
         parent::setUp();
         factory(City::class, 1)->create();
       
-        $this->user = factory(User::class, 1)->create();
+        factory(User::class, 1)->create();
         
         factory(Address::class, 1)->create();
        
@@ -38,14 +39,23 @@ class LoginTest extends TestCase
     {
       $this->withoutExceptionHandling();
 
+      $user = User::create([
+        'first_name'     => 'enamnuel',
+        'last_name'      => 'lassis',
+        'identification' => '01800735258',
+        'cellphone'      => '8095423454',
+        'email'          => 'testEmail@gmail.com',
+        'type'           => 'client',
+        'password'       => Hash::make('rosa1007'),
+      ]);
+
         $response = $this->postJson(route('login',[
-          'email'    => $this->user[0]['email'],
-          'password' => $this->user[0]['password'],
+          'email'    => $user->email,
+          'password' => 'rosa1007',
 
         ]));
         
-        //$response->assertStatus(200);
+        $response->assertStatus(302);
 
-        //$this->assertEqual($response->json())
     }
 }

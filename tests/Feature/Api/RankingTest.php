@@ -9,8 +9,10 @@ use App\Job;
 use App\User;
 use App\City;
 use App\Address;
+use App\Profession;
 use App\Technician;
 use App\Ranking;
+use Illuminate\Support\Facades\Hash;
 
 class RankingTest extends TestCase
 {
@@ -26,6 +28,7 @@ class RankingTest extends TestCase
         factory(City::class, 1)->create();
         factory(User::class, 1)->create();
         factory(Address::class, 1)->create();
+        factory(Profession::class, 1)->create();
         $this->tech = factory(Technician::class, 1)->create();
         $this->job = factory(Job::class, 1)->create();
         $this->ranking = factory(Ranking::class, 1)->create();
@@ -40,9 +43,10 @@ class RankingTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $localJob = factory(Job::class, 1)->create();
         $this->postJson(route('ranking.store'),[
             'technician_id' => $this->tech[0]['id'],
-            'job_id'        => $this->job[0]['id'],
+            'job_id'        => $localJob[0]['id'],
             'job_ranking'   => '4' 
         ])->assertCreated();
 
@@ -53,8 +57,17 @@ class RankingTest extends TestCase
     {
        $this->withoutExceptionHandling();
 
-       $response = $this->getJson(route('ranking.show',$this->tech[0]['id']));
-       //dd($response);
+       $user = User::create([
+        'first_name'     => 'enamnuel',
+        'last_name'      => 'lassis',
+        'identification' => '01800735258',
+        'cellphone'      => '8095423454',
+        'email'          => 'testEmail@gmail.com',
+        'type'           => 'client',
+        'password'       => Hash::make('rosa1007'),
+      ]);
+
+       $response = $this->actingAs($user)->getJson(route('ranking.show',$this->tech[0]['id']));
        $this->assertEquals($response->json()['job_ranking'], $this->ranking[0]['job_ranking']);
     }
 

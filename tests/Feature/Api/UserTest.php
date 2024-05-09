@@ -6,6 +6,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+use Illuminate\Support\Facades\Hash;
+
 use App\User;
 use App\City;
 use App\Address;
@@ -37,15 +39,21 @@ class UserTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        //dd($this->user);
+        $autUser = User::create([
+          'first_name'     => 'enamnuel',
+          'last_name'      => 'lassis',
+          'identification' => '01800735258',
+          'cellphone'      => '8095423454',
+          'email'          => 'testEmail@gmail.com',
+          'type'           => 'client',
+          'password'       => Hash::make('rosa1007'),
+        ]);
 
-        $response = $this->getJson(route('user.show',1));
-
-        //dd($response->json()['id']);
+        $response = $this->actingAs($autUser)->getJson(route('user.show',$this->user[0]->email));
 
         $response->assertOk();
 
-        $this->assertEquals($response->json()['id'],$this->user[0]['id']);
+        $this->assertEquals($response->json()['data']['user_info']['id'],$this->user[0]['id']);
     }
     
     public function test_store()
@@ -59,9 +67,9 @@ class UserTest extends TestCase
             'cellphone'      => '8294368573',
             'email'          => 'enmanuel@gmail.com',
             'password'       => 'rosa1007'
-        ])->assertCreated();
+        ])->assertOk();
 
-        $response->assertStatus(201);
+        $response->assertStatus(200);
         
         $this->assertDatabaseHas('users', ['last_name' => 'lassis']);
     }

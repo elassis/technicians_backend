@@ -38,10 +38,10 @@ class Technician_professionController extends Controller
      */
     public function store(Request $request)
     {
-        $allData = $request->all();
-        $techId = $allData[0]['technician_id'];
-        $techEntity = Technician::findOrFail($techId);
-        try {
+      try {
+            $allData = $request->all();
+            $techId = $allData[0]['technician_id'];
+            $techEntity = Technician::findOrFail($techId);
           	foreach($allData as $technicianData){
             	Technician_profession::create($technicianData);
           	}
@@ -62,16 +62,8 @@ class Technician_professionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-
-        //TODO - REFACTOR THIS
-      $profs = DB::table('technician_professions')
-      ->join('professions','technician_professions.profession_id','=','professions.id')
-      ->select('technician_professions.profession_id','technician_professions.technician_id','professions.name', 'technician_professions.price_hour')
-      ->where('technician_professions.technician_id','=', $id)
-      ->get();
-      return $profs;
-        
+    {      
+      return Technician_profession::findOrFail($id);   
     }
 
     /**

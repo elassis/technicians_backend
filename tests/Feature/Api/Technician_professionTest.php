@@ -11,6 +11,7 @@ use App\City;
 use App\Address;
 use App\Technician;
 use App\Profession;
+use Illuminate\Support\Facades\Hash;
 
 class Technician_professionTest extends TestCase
 {
@@ -40,10 +41,18 @@ class Technician_professionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->getJson(route('tech_prof.show',$this->tech[0]['id']));
+        $user = User::create([
+          'first_name'     => 'enamnuel',
+          'last_name'      => 'lassis',
+          'identification' => '01800735258',
+          'cellphone'      => '8095423454',
+          'email'          => 'testEmail@gmail.com',
+          'type'           => 'client',
+          'password'       => Hash::make('rosa1007'),
+        ]);
 
-        //dd($this->tech);
-
+        $response = $this->actingAs($user)->getJson(route('tech_prof.show',$this->tech[0]['id']));
+        /* dd($response->json()); */
         $this->assertEquals($response->json()['technician_id'],$this->tech[0]['id']);
     }
 
@@ -51,10 +60,14 @@ class Technician_professionTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->postJson(route('tech_prof.store'),[
-            'technician_id' => $this->tech[0]['id'],
-            'profession_id' => $this->pro[0]['id']
-        ])->assertCreated();
+        $testTechproData = [
+          'technician_id' => $this->tech[0]['id'],
+          'profession_id' => $this->pro[0]['id'],
+          'price_hour'    => 50,
+        ];
+
+        //dd($testTechproData[0]['technician_id']);
+        $this->postJson(route('tech_prof.store', $testTechproData))->assertOk();
 
         $this->assertDatabaseHas('technician_professions',
         ['technician_id' => $this->tech[0]['id']]);
@@ -67,11 +80,9 @@ class Technician_professionTest extends TestCase
         $this->postJson(route('tech_prof.store'),[
           'technician_id' => $this->tech[0]['id'],
           'profession_id' => $this->pro[0]['id']
-        ])->assertCreated();
-
-        $this->deleteJson(route('tech_prof.destroy'),[
-            'technician_id' => $this->tech[0]['id'],
         ])->assertOk();
+
+        $this->deleteJson(route('tech_prof.destroy',$this->tech[0]['id']))->assertOk();
 
         $this->assertDatabaseMissing('technician_professions',
         ['technician_id' => $this->tech[0]['id']]);

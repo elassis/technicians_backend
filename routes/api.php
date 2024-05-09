@@ -56,6 +56,7 @@ Route::post('job', [JobController::class, 'store'])->name('job.store');
 Route::get('job/{id}', [JobController::class, 'show'])->middleware('auth:sanctum')->name('job.show');
 Route::put('job/{id}', [JobController::class, 'update'])->name('job.update');
 Route::delete('job/{id}', [JobController::class, 'destroy'])->name('job.destroy');
+Route::post('job/rank',[JobController::class, 'rankCommentJob'])->name('job.rankJob');
 
 //Tech_professions routes
 Route::get('tp/{id}', [Technician_professionController::class, 'show'])->middleware('auth:sanctum')->name('tech_prof.show');

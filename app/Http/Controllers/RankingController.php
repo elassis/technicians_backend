@@ -16,10 +16,7 @@ class RankingController extends Controller
      */
     public function index()
     {
-        $rankings = DB::table('rankings')
-        ->select('rankings.job_id')
-        ->get();
-
+        $rankings = Ranking::all();
         return response($rankings);
     }
 
@@ -53,10 +50,7 @@ class RankingController extends Controller
      */
     public function show($id)
     {
-        $ranking = DB::table('rankings')
-        ->select('rankings.job_ranking')
-        ->where('rankings.job_id','=',$id)
-        ->get();
+        $ranking = Ranking::findOrFail($id);
         return response($ranking);
     }
 
@@ -89,9 +83,9 @@ class RankingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ranking $id)
+    public function destroy($id)
     {
-        $id->delete();
-        return response('',204);
+        Ranking::findOrFail($id)->delete();
+        return response('', 204);
     }
 }
