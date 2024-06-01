@@ -66,6 +66,8 @@ For more information on the importance of a professional README for your reposit
 - **User/Technician Modification**
 - **User/Technician Deletion**
 - **Email Contact Feature using Laravel events**
+- **Email Rank/comment job reminder Feature using Laravel schedule task/job**
+
   
 <!-- LIVE DEMO -->
 
