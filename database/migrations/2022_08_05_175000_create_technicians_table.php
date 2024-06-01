@@ -6,32 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTechniciansTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('technicians', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id')->unique();
-            $table->boolean('available')->default(true);
-            $table->rememberToken();
-            $table->timestamps();
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::create('technicians', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->unsignedBigInteger('user_id')->unique();
+      $table->boolean('available')->default(true);
+      $table->rememberToken();
+      $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')
-            ->onDelete('cascade');
-        });
-    }
+      $table->foreign('user_id')->references('id')->on('users')
+        ->onDelete('cascade');
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('technicians');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('technicians');
+  }
 }

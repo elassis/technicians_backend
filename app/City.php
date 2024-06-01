@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
-    protected $fillable = ['name'];
+  protected $fillable = ['name'];
 
-    public function address()
-    {
-      return $this->hasMany(Address::class);
-    }
+  public function address()
+  {
+    return $this->hasMany(Address::class);
+  }
 }

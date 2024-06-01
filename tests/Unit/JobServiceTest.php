@@ -16,14 +16,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class JobServiceTest extends TestCase
 {
 
-	use RefreshDatabase;
+    use RefreshDatabase;
 
-	protected $job;
+    protected $job;
     protected $user;
     protected $ranking;
     protected $profession;
-	
-	public function setUp():void
+
+    public function setUp(): void
     {
         parent::setUp();
         factory(City::class, 1)->create();
@@ -45,12 +45,12 @@ class JobServiceTest extends TestCase
 
         $service = new JobService();
 
-		$response = $service->show($this->job[0]->id);
+        $response = $service->show($this->job[0]->id);
 
-		$this->assertEquals($response['id'], $this->job[0]->id);
+        $this->assertEquals($response['id'], $this->job[0]->id);
     }
 
-	/**
+    /**
      * Testing update ranking and comment service's method.
      *
      * @return void
@@ -61,18 +61,18 @@ class JobServiceTest extends TestCase
 
         $service = new JobService();
 
-		$dataToUpdate = [
-			'ranking' => 2,
-			'comment' => 'I like it',
-		];
+        $dataToUpdate = [
+            'ranking' => 2,
+            'comment' => 'I like it',
+        ];
 
-		$service->storeCommentAndRanking($this->job[0]->id, $dataToUpdate);
-		
-		//Assertions
-	    // Comment added
-		$this->assertDatabaseHas('jobs',['comments' => 'I like it']);
+        $service->storeCommentAndRanking($this->job[0]->id, $dataToUpdate);
 
-		// Ranking updated
-		$this->assertDatabaseHas('rankings',['job_ranking' => 2]);
+        //Assertions
+        // Comment added
+        $this->assertDatabaseHas('jobs', ['comments' => 'I like it']);
+
+        // Ranking updated
+        $this->assertDatabaseHas('rankings', ['job_ranking' => 2]);
     }
 }

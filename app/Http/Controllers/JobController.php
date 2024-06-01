@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Job;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Profession;
 use App\Technician;
+use App\Services\JobService;
+use Illuminate\Http\Request;
 use App\Events\JobRequested;
 use App\Events\JobRequestReponse;
 use App\Http\Requests\RankCommentJobRequest;
-use App\Services\JobService;
+use App\Http\Resources\JobResource;
 
 class JobController extends Controller
 {
@@ -45,15 +45,14 @@ class JobController extends Controller
     {
         try {
             Job::create($request->all());
-      
-            // get technician email, customer name and profession  
+
+            // get technician email, customer name and profession
             $user = User::find($request->user_id);
             $profession = Profession::findOrFail($request->profession_id);
             $techEmail = Technician::findOrFail($request->technician_id)->user->email;
-            $userFullname = $user->first_name.' '.$user->last_name;      
+            $userFullname = $user->first_name . ' ' . $user->last_name;
 
             event(new JobRequested($userFullname, $techEmail, $profession->name));
-          
         } catch (\Throwable $th) {
             return response($th, 500);
         }
@@ -73,7 +72,8 @@ class JobController extends Controller
     public function show($id)
     {
         $service = new JobService();
-        return $service->show($id);
+        $jobInstance = $service->show($id);
+        return response(new JobResource($jobInstance), 200);
     }
 
     /**
@@ -84,34 +84,34 @@ class JobController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    { 
-      //update job
+    {
+        //update job
         try {
             $job = Job::findOrFail($id);
             $job->update($request->all());
 
             $technician = $job->technician->user;
-            
+
             $client = User::findOrFail($job->user_id);
             $customerMail = $client->email;
-            
+
             $response = $request->status;
-    
+
             $techInfo = [
-                'name'  => $technician->first_name .' '.$technician->last_name,
+                'name'  => $technician->first_name . ' ' . $technician->last_name,
                 'phone' => $technician->cellphone,
                 'email' => $technician->email
             ];
-    
+
             event(new JobRequestReponse($techInfo, $customerMail, $response));
         } catch (\Throwable $th) {
             return response($th, 500);
         }
-      
+
 
         return response([
-          'data' => 'job successfully updated',
-          'status' => 200
+            'data' => 'job successfully updated',
+            'status' => 200
         ]);
     }
 
@@ -123,12 +123,12 @@ class JobController extends Controller
      */
     public function destroy($id)
     {
-      try {
-        Job::findOrFail($id)->delete();
-      } catch (\Throwable $th) {
-        response('there was an error', 500);
-      }
-        return response('',204);
+        try {
+            Job::findOrFail($id)->delete();
+        } catch (\Throwable $th) {
+            response('there was an error', 500);
+        }
+        return response('', 204);
     }
 
     /**
@@ -139,20 +139,18 @@ class JobController extends Controller
      */
     public function rankCommentJob(RankCommentJobRequest $request)
     {
-        try{
+        try {
             $jobService = new JobService();
-		    $validatedData = $request->validated();
+            $validatedData = $request->validated();
             $jobId = $validatedData['id'];
-		    $jobService->storeCommentAndRanking($jobId, $validatedData);
-        }catch(\Throwable $th){
-          return response($th, 500);
+            $jobService->storeCommentAndRanking($jobId, $validatedData);
+        } catch (\Throwable $th) {
+            return response($th, 500);
         }
 
         return response([
-          'message' => 'job ranked successfully',
-          'status' => 200,
+            'message' => 'job ranked successfully',
+            'status' => 200,
         ]);
     }
-
-    
 }

@@ -36,12 +36,12 @@ use App\Http\Controllers\Technician_professionController;
 Route::get('index', [TechnicianController::class, 'index'])->middleware('auth:sanctum')->name('index');
 Route::post('technician', [TechnicianController::class, 'store'])->name('technician.store');
 Route::get('technician/{id}', [TechnicianController::class, 'show'])->middleware('auth:sanctum')->name('technician.show');
-Route::put('technician/{id}',[TechnicianController::class, 'update'])->name('technician.update');
-Route::delete('technician/{id}',[TechnicianController::class, 'destroy'])->name('technician.destroy');
+Route::put('technician/{id}', [TechnicianController::class, 'update'])->name('technician.update');
+Route::delete('technician/{id}', [TechnicianController::class, 'destroy'])->name('technician.destroy');
 
 //User routes
 Route::post('user', [UserController::class, 'store'])->name('user.store');
-Route::get('user/{email}',[UserController::class, 'show'])->middleware('auth:sanctum')->name('user.show');
+Route::get('user/{email}', [UserController::class, 'show'])->middleware('auth:sanctum')->name('user.show');
 Route::put('user/{id}', [UserController::class, 'update'])->name('user.update');
 Route::delete('user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
@@ -56,7 +56,7 @@ Route::post('job', [JobController::class, 'store'])->name('job.store');
 Route::get('job/{id}', [JobController::class, 'show'])->middleware('auth:sanctum')->name('job.show');
 Route::put('job/{id}', [JobController::class, 'update'])->name('job.update');
 Route::delete('job/{id}', [JobController::class, 'destroy'])->name('job.destroy');
-Route::post('job/rank',[JobController::class, 'rankCommentJob'])->name('job.rankJob');
+Route::post('job/rank', [JobController::class, 'rankCommentJob'])->name('job.rankJob');
 
 //Tech_professions routes
 Route::get('tp/{id}', [Technician_professionController::class, 'show'])->middleware('auth:sanctum')->name('tech_prof.show');
@@ -65,14 +65,13 @@ Route::delete('tp/{id}', [Technician_professionController::class, 'destroy'])->n
 
 
 //Ranking routes
-Route::post('ranking', [RankingController::class,'store'])->name('ranking.store');
-Route::get('rankings',[RankingController::class,'index'])->name('ranking.index');
-Route::get('ranking/{id}', [RankingController::class,'show'])->middleware('auth:sanctum')->name('ranking.show');
-Route::delete('ranking/{id}',[RankingController::class, 'destroy'])->name('ranking.destroy');
+Route::post('ranking', [RankingController::class, 'store'])->name('ranking.store');
+Route::get('rankings', [RankingController::class, 'index'])->name('ranking.index');
+Route::get('ranking/{id}', [RankingController::class, 'show'])->middleware('auth:sanctum')->name('ranking.show');
+Route::delete('ranking/{id}', [RankingController::class, 'destroy'])->name('ranking.destroy');
 
 //City routes
 Route::get('cities', [CityController::class, 'index'])->name('city.index');
 
 //professions routes
 Route::get('professions', [ProfessionController::class, 'index'])->name('professions.index');
-

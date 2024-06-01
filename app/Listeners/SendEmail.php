@@ -8,29 +8,29 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class SendEmail
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+  /**
+   * Create the event listener.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    //
+  }
 
-    /**
-     * Handle the event.
-     *
-     * @param  JobRequested  $event
-     * @return void
-     */
-    public function handle(JobRequested $event)
-    {
-      $details = [
-        'user' => $event->user,
-        'job' => $event->job
-      ];
+  /**
+   * Handle the event.
+   *
+   * @param  JobRequested  $event
+   * @return void
+   */
+  public function handle(JobRequested $event)
+  {
+    $details = [
+      'user' => $event->user,
+      'job' => $event->job
+    ];
 
-        \Mail::to($event->email)->send(new \App\Mail\JobRequestMail($details));
-    }
+    \Mail::to($event->email)->send(new \App\Mail\JobRequestMail($details));
+  }
 }

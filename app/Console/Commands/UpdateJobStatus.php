@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use App\Job;
 
 class UpdateJobStatus extends Command
 {
@@ -39,14 +40,13 @@ class UpdateJobStatus extends Command
      */
     public function handle()
     {
+        $now = Carbon::now();
 
-      $now = Carbon::now();
-      DB::table('jobs')
-          ->where('end_date','<', $now)
-          ->where('status','=','pending')
-          ->update([
-            'status' => 'rejected'
-          ]);
-       /*  return 0; */
+        $expiredJobs = Job::where('end_date', '<', $now)
+            ->where('status', '=', 'pending')->get();
+
+        foreach ($expiredJobs as $expiredJob) {
+            $expiredJob->update(['status' => 'rejected']);
+        }
     }
 }

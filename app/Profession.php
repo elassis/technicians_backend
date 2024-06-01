@@ -8,22 +8,20 @@ use App\Technician;
 
 class Profession extends Model
 {
-    protected $fillable = ['name'];
+  protected $fillable = ['name'];
 
-    public function technicianProfession()
-    {
-        return $this->hasMany(Technician_profession::class);
-    }
+  public function technicianProfession()
+  {
+    return $this->hasMany(Technician_profession::class);
+  }
 
-    public function job()
-    {
-        return $this->hasOne(Job::class);
-    }
+  public function job()
+  {
+    return $this->hasOne(Job::class);
+  }
 
-    public function technicians()
-    {
-        return $this->belongsToMany(Technician::class, 'technician_professions');
-    }
-
-
+  public function technicians()
+  {
+    return $this->belongsToMany(Technician::class, 'technician_professions');
+  }
 }

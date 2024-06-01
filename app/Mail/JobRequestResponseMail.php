@@ -9,28 +9,28 @@ use Illuminate\Queue\SerializesModels;
 
 class JobRequestResponseMail extends Mailable
 {
-    use Queueable, SerializesModels;
+  use Queueable, SerializesModels;
 
-    public $details;
+  public $details;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($details)
-    {
-      $this->details = $details;
-    }
+  /**
+   * Create a new message instance.
+   *
+   * @return void
+   */
+  public function __construct($details)
+  {
+    $this->details = $details;
+  }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-      return $this->subject('You have the response to your request')
+  /**
+   * Build the message.
+   *
+   * @return $this
+   */
+  public function build()
+  {
+    return $this->subject('You have the response to your request')
       ->view('emails.jobRequestResponse');
-    }
+  }
 }

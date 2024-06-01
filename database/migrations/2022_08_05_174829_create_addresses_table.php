@@ -6,35 +6,35 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateAddressesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('addresses', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id')->unique();
-            $table->unsignedBigInteger('city_id');
-            $table->string('street');
-            $table->string('sector');
-            $table->string('number');
-            $table->timestamps();
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::create('addresses', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->unsignedBigInteger('user_id')->unique();
+      $table->unsignedBigInteger('city_id');
+      $table->string('street');
+      $table->string('sector');
+      $table->string('number');
+      $table->timestamps();
 
-            $table->foreign('city_id')->references('id')->on('cities');
-            $table->foreign('user_id')->references('id')->on('users')
-            ->onDelete('cascade');
-        });
-    }
+      $table->foreign('city_id')->references('id')->on('cities');
+      $table->foreign('user_id')->references('id')->on('users')
+        ->onDelete('cascade');
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('addresses');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('addresses');
+  }
 }

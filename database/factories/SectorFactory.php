@@ -6,7 +6,7 @@ use App\Sector;
 use Faker\Generator as Faker;
 
 $factory->define(Sector::class, function (Faker $faker) {
-    return [
-        'sector_name' => $faker->name
-    ];
+  return [
+    'sector_name' => $faker->name
+  ];
 });

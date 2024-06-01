@@ -28,6 +28,6 @@ class JobRankingEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Let\'s give some feedback!')->view('emails.rankCommentJob');
+        return $this->subject('Let\'s give some feedback!')->view('emails.rankCommentJob')->with($this->details);
     }
 }

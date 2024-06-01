@@ -8,9 +8,9 @@ use App\Technician;
 use App\Profession;
 
 $factory->define(Technician_profession::class, function (Faker $faker) {
-    return [
-        'technician_id' => Technician::inRandomOrder()->first()->id,
-        'profession_id' => Profession::inRandomOrder()->first()->id,
-        'price_hour' => $faker->numberBetween($min = 200, $max = 500)
-    ];
+  return [
+    'technician_id' => Technician::inRandomOrder()->first()->id,
+    'profession_id' => Profession::inRandomOrder()->first()->id,
+    'price_hour' => $faker->numberBetween($min = 200, $max = 500)
+  ];
 });

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Job extends Model
 {
-    protected $fillable = ['user_id','technician_id','profession_id','status','text','comments', 'begin_date','end_date'];
+    protected $fillable = ['user_id', 'technician_id', 'profession_id', 'status', 'text', 'comments', 'begin_date', 'end_date'];
 
     public function technician()
     {
@@ -22,5 +22,4 @@ class Job extends Model
     {
         return $this->hasOne(Ranking::class);
     }
-    
 }

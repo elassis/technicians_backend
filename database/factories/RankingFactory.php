@@ -8,9 +8,9 @@ use App\Technician;
 use App\Job;
 
 $factory->define(Ranking::class, function (Faker $faker) {
-    return [
-        'technician_id' => Technician::inRandomOrder()->first()->id,
-        'job_id'        => Job::inRandomOrder()->first()->id,
-        'job_ranking'   => $faker->numberBetween($min = 1, $max = 5)
-    ];
+  return [
+    'technician_id' => Technician::inRandomOrder()->first()->id,
+    'job_id'        => Job::inRandomOrder()->first()->id,
+    'job_ranking'   => $faker->numberBetween($min = 1, $max = 5)
+  ];
 });
